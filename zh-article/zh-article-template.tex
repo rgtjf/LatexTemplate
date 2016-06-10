@@ -1,1 +1,107 @@
 
+\documentclass{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{CJK}
+
+\begin{document}
+\begin{CJK}{GBK}{kai}
+
+\newtheorem{proposition}{命题}[section]
+\newtheorem{example}{例}[section]
+\renewcommand{\figurename}{图}
+
+\title{摄像机几何}
+\author{田~俊峰 \\ 51151201048@ecnu.cn}
+
+\maketitle
+%\tableofcontents
+
+%\newpage
+
+%\begin{abstract}
+%\end{abstract}
+
+三维计算机视觉的主要任务是建立三维物体与二维图像之间的对应关系，即~1)~从三维物体成像为二维图形； ~2)~利用二维图像所包含的信息，获取三维物体的空间位置与形状等几何信息，并在此基础上识别三维物体。而图像点在图像平面上的位置仅与摄像机与空间物体的相对方位和摄像机的内部结构有关，摄像机的内部结构是由摄像机的内部参数所决定的。为了描述摄像机的几何成像关系，需要对摄像机建模，这就是摄像机几何。 \\
+
+常见的摄像机模型有针孔模型，通常也叫做线性模型；和非线性模型，摄像机元件在成像时往往会发生畸变。本文主要讨论的是线性模型，这种模型在数学上是三维空间到二维平面的一个中心投影，用一个~$3
+\times 4$~的矩阵显示。在第\ref{sec:model}节将会介绍摄像机的基本模型，分析讨论摄影矩阵和几何成像之间的关系；在第\ref{sec:reflect}节将会利用摄像机模型讨论空间点、直线、平面、二次曲线的投影性质，以及图像屏幕点、直线与二次曲线的反投影性质；在第\ref{sec:recover}节将会讨论如何从二维图像恢复三维物体的几何结构(位置，形状等)。 \\
+
+\section{摄像机模型}
+\label{sec:model}
+
+
+\subsection{基本模型}
+
+\bf{构建坐标系} \\
+
+\bf{矩阵形式} \\
+
+\bf{问题一：主点偏离图像中心} \\
+
+\bf{问题二：世界坐标系与摄像机坐标系} \\
+
+\section{投影和反投影}
+\label{sec:reflect}
+
+\section{恢复平面景物的几何结构}
+\label{sec:recover}
+
+\subsection{准备知识}
+
+\subsection{恢复平面景物的几何结构}
+
+\bf{仿射结构}
+
+\begin{proposition}
+从图像能恢复平面景物仿射结构的充要条件是能确定物体平面上无穷远直线的图像直线。
+\end{proposition}
+
+\begin{example}
+正方形投影平行四边形，即知道边平行，不知道邻边角度，不知道长度。
+\end{example}
+
+\begin{proof}[证明:]
+
+必要性：图像能恢复仿射结构 $\Rightarrow$ 图像上有物体平面上的无穷远直线。
+
+取物体平面上两点\,$X_1 = (1,0,0)^T, X_2 = (0, 1, 0)^T$，由射影变换矩阵得到图像上的位置\,$m_1, m_2$，两点确定一条直线，即可得到图像上物体平面上的无穷远直线。
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=1.0\textwidth]{figs/test}
+\caption{从无穷远直线的图像恢复仿射结构}
+\end{figure}
+
+充分性：物体平面上无穷远直线在 $\Rightarrow$ 图像能恢复仿射结构。
+
+在无穷远直线上选取两个点\,$v_1, v2$，在直线外图像内再选取两个点\,$u_1, u_2$。
+$\because$ 两条直线平行 $\Leftrightarrow$ 交点在无穷远直线，$ \therefore v_1u_1 \parallel v_1u_2 \land v_2u_1 \parallel v_2u_2$。\\
+对这两组平行线建立仿射坐标系，并且我们知道四个顶点各自对应的坐标，变换矩阵形式即可得到对应的射影变换\,$H$。
+
+\end{proof}
+
+\bf{相似结构}
+
+\begin{proposition}
+从图像能恢复平面景物的相似结构的充要条件是在像平面内能确定景物平面两个圆环点的图像。
+\end{proposition}
+
+\begin{example}
+正方形投影相似正方形，即知道边平行，知道邻边角度，不知道长度。
+\end{example}
+
+\bf{欧氏结构}
+
+\begin{proposition}
+从图像能恢复平面景物的欧氏结构的充要条件是能确定物体平面两个圆环点的图像，并且已知某两个图像点所对应的两个物体平面点之间的距离。
+\end{proposition}
+
+\begin{example}
+正方形投影相似正方形且知道比例，即知道边平行，知道邻边角度，知道长度。
+\end{example}
+
+\end{CJK}
+\end{document}
+

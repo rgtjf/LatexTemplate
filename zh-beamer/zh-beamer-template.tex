@@ -1,1 +1,420 @@
+\documentclass{beamer}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm,algorithmic}
+\usepackage{CJK}
+\usepackage{txfonts}
+\usepackage{subfigure}
+\usepackage{pgf,tikz}
+\usetikzlibrary{shapes,arrows,automata}
+\usepackage{changepage}
+\setbeamercovered{transparent}
+
+\newtheorem{thm2}{Theorem}[section]
+\newtheorem{remark}[thm2]{Remark}
+
+\newcommand{\Pow}{\mathbf{P}}
+
+
+%\usetheme{Warsaw,Antibes,Madrid,JuanLesPins,bars}
+\usetheme{CambridgeUS}
+%\usetheme{Hannover,Singapore}
+\begin{document}
+\begin{CJK}{GBK}{kai}
+
+    \title[Lecture~3]{Discrete Mathematics}
+    \author[XU Ming]{XU Ming \quad (徐~鸣)}
+    \institute[ECNU]{Department of Computer Science, East China Normal University}
+    \date{\today}
+
+    \frame{\titlepage}
+
+
+\section{1.~GCDs and LCMs}
+\frame{\frametitle{Chapter~2 NUMBER THEORY}
+\begin{enumerate}
+\item[2.1] 最大公因数和最小公倍数
+\item[2.2] 素数
+\item[2.3] 一次同余方程
+\item[2.4] RSA\,公钥密码体制*
+\end{enumerate}}
+
+\frame{\frametitle{Outline of \S-1 GCDs and LCMs}
+\begin{enumerate}
+\item[2.1.1] 整除, 同余, 最大公因数和最小公倍数
+\item[2.1.2] 欧几里得算法
+\item[2.1.3] 最大公因数和最小公倍数的性质
+\end{enumerate}}
+
+\subsection{Basic Notions}
+\frame{\frametitle{整除}
+\begin{definition}[整除]
+设\,$a,b \neq 0$\,为整数.\\
+$b$\,{\color{red}整除}\,$a$: 存在整数\,$q$, 使得\,$a=b \cdot q$, 记为\,$b \mid a$; 否则\,$b \nmid a$.\\
+$b$\,是\,$a$\,的{\color{red}因数}\,(约数, 因子, factor), $a$\,是\,$b$\,的{\color{blue}倍数}: $b \mid a$; \\
+$b$\,是\,$a$\,的{\color{red}真因数}\,(proper factor): $b \mid a$\,并且\,$|a|>|b|$.
+\end{definition}
+\vspace{0.5cm}
+\pause
+
+注意{\color{red}零除}的问题:
+\begin{itemize}
+\item 任何数不能除以\,$0$;
+\item 任何整数都是\,$0$\,的因数, 但\,$0$\,不是任何整数的因数;
+\item $0$\,是任何整数的倍数, 但\,$0$\,没有倍数.
+\end{itemize}}
+
+\frame{\frametitle{同余}
+\begin{definition}[同余和同余式]
+设\,$a,b$\,为整数, $m$\,为非零整数.\\
+$a$\,和\,$b$\,模\,$m$\,{\color{red}同余}\,(congruent): $m \mid (a-b)$, 记为同余式\,$a \equiv b \mod m$.
+\end{definition}
+\vspace{0.5cm}
+\pause
+
+显然, 我们有\,$a \equiv b \mod m$\,当且仅当\,$a \mod m = b \mod m$.}
+
+\frame{\frametitle{同余}
+\begin{example}
+\begin{align*}
+10 & \equiv 4 \mod 3, \\
+24 & \equiv 0 \mod 8.
+\end{align*}
+\end{example}
+\vspace{0.5cm}
+\pause
+
+\begin{remark}
+注意\,$\equiv$\,和\,$=$\,的区别: \\
+因为\,$4 \mod 3 = 7 \mod 3 = 1$, 所以\,$7 \equiv 4 \mod 3$. \\
+但\,$4 \neq 7$.
+\end{remark}}
+
+\frame{\frametitle{同余}
+\begin{theorem}[同余关系是等价关系]
+\begin{enumerate}
+\item 自反性: $a \equiv a \mod m$.
+\item 对称性: $a \equiv b \mod m \Leftrightarrow b \equiv a \mod m$.
+\item 传递性: $a \equiv b \mod m, b \equiv c \mod m \Rightarrow a \equiv c \mod m$.
+\end{enumerate}
+\end{theorem}}
+
+\frame{\frametitle{同余}
+\begin{theorem}[模算术运算的性质]
+\begin{enumerate}
+\item 若\,$a \equiv b \mod m$, $c \equiv d \mod m$, 则\,$a \pm c \equiv b \pm d \mod m$.
+\item 若\,$a \equiv b \mod m$, $c \equiv d \mod m$, 则\,$a \cdot c \equiv b \cdot d \mod m$.
+\item 若\,$a \cdot c \equiv b \cdot c \mod m$, 则\,$a \equiv b \mod \tfrac{m}{(c,m)}$; \\
+    特别地, 当\,$(c, m) = 1$\,时, 有\,$a \equiv b \mod m$. \\ (其中\,$(c,m)$\,表示\,$c$\,和\,$m$\,的最大公因数.)
+\end{enumerate}
+\end{theorem}}
+
+\frame{\frametitle{同余}
+同余式与通常的等式具有许多相似的性质
+\begin{theorem}[按模运算]
+\begin{enumerate}
+\item $(x \pm y) \mod m = \big( ( x \mod m) \pm (y \mod m) \big) \mod m$.
+\item $(x \times y) \mod m = \big( ( x \mod m) \times (y \mod m) \big ) \mod m$.
+\end{enumerate}
+\end{theorem}
+\pause
+
+\begin{example}
+计算\,$2^{340} \mod 31$, $3^5 \mod 7$, 和\,$2^{340} \mod 11$.
+\begin{enumerate}
+\item $2^{340} = (2^5)^{68}$, \\
+      $2^{340} \mod 31 = (32 \mod 31)^{68} \mod 31 = 1^{68} \mod 31=1$.
+\item $3^{5} = 3 \times 9^2$,\\
+      $3^{5} \mod 7 = \big(3 \times (9 \mod 7)^2 \big) \mod 7 = (3 \times 4) \mod 7 = 5$.
+\item $2^{340} \mod 11 = (2^{10} \mod 11)^{34} \mod 11 = 1^{34} \mod 11 = 1$.
+\end{enumerate}
+\end{example}}
+
+
+\frame{
+\frametitle{最大公因数}
+\begin{definition}[公因数, 最大公因数]
+设整数\,$a_1, a_2, \ldots, a_n$\,($n \ge 2$)\,不全为零, \\
+\begin{itemize}
+\item {\color{red}公因数:} 各个数的公共因数;
+\item {\color{red}最大公因数}\,(greatest common divisor, GCD): 最大的公因数, 记为\,$( a_1, a_2, \ldots, a_n )$\,或\,$\gcd(a_1, a_2, \ldots, a_n)$;
+\item{\color{red}$a_1, a_2, \ldots, a_n$\,互素(互质)}\,(co-prime): $( a_1, a_2, \ldots, a_n )=1$.
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+最大公因数一定是正整数, 因为若\,$d$\,是公因数, 则\,$-d$\,也是公因数.
+\end{remark}
+\vspace{0.5cm}
+\pause
+
+\begin{example}
+$(24,-28)=4$, $(24,-28,0)=4$, $(0,0)=?$.
+\end{example}}
+
+\frame{
+\frametitle{最小公倍数}
+\begin{definition}[公倍数, 最小公倍数]
+设整数\,$a_1, a_2, \ldots, a_n$\,($n \ge 2$)\,不全为零, \\
+\begin{itemize}
+\item {\color{red}公倍数:} 各个数的公共倍数;
+\item {\color{red}最小公倍数}\,(least common multipler, LCM): 最小的正公倍数, 记为\,$[ a_1, a_2, \ldots, a_n ]$\,或\,$\mathrm{lcm}(a_1, a_2, \ldots, a_n)$.
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+从定义中, 我们已限定了最小公倍数是正整数.
+\end{remark}
+\vspace{0.5cm}
+\pause
+
+\begin{example}
+$[24,-28]=4 \cdot 6 \cdot 7$, $(24,-28,0)=?$, $(0,0)=?$.
+\end{example}}
+
+
+\frame{\frametitle{最大与最小}
+任何公因数都是最大公因数的因数, \\
+\vspace{0.5cm}
+
+任何公倍数都是最小公倍数的倍数. \\
+\vspace{0.5cm}
+
+{\color{green}TIPS:} 这两条性质可分别用来定义最大公因数和最小公倍数.
+\vspace{0.5cm}
+\pause
+
+{\color{red}PROBLEM:} 如何求最大公因数?---欧几里得算法.}
+
+
+\subsection{Euclidean Algorithm}
+\frame{\frametitle{带余除法}
+\begin{theorem}[带余除法]
+设\,$a,b \neq 0$\,为整数.\\
+存在整数\,$q$\,和\,$r$, 使得
+$$a = b \cdot q + r \quad (0 \le r <b);$$ 并且\,$q$\,和\,$r$\,由\,$a$\,和\,$b$\,{\color{red}唯一}决定.
+\end{theorem}
+\vspace{0.5cm}
+\pause
+
+一些术语:\\
+在上式中, 若\,$r=0$, 则称\,$q$\,是\,$a$\,被\,$b$\,除的{\color{red}完全商}\,(quotient);\\
+否则\,($r \ne 0$), $q$\,是{\color{red}不完全商}\,(partial quotient), $r$\,是{\color{red}余数}\,(remainder).
+\vspace{0.5cm}
+\pause
+
+{\color{red}QUIZ:} 证明\,$b$\,整除$a$\,当且仅当\,$a$\,被\,$b$\,除的余数为零.}
+
+
+%%整除和带余除法(3)
+\frame{\frametitle{带余除法}
+\begin{example}
+\begin{enumerate}
+\item $\tfrac{255}{15}=17$, 即\,$255 = 15 \times 17 + 0$. \\
+        所以, $15 \mid 255$, $255$\,被\,$15$\, 除的{\color{red}完全商}是\,$17$, {\color{red}余数}是\,$0$.
+\item $\tfrac{418}{15}=27.8666 \cdots$, 即\,$418 = 15 \times 27 + 13$. \\
+        所以, $15 \nmid 418$, $418$\,被\,$15$\,除的{\color{red}不完全商}是\,$27$, {\color{red}余数}是\,$13$.
+\item $\tfrac{-81}{15} = -5.4$, 即\,$-81 = 15 \times (-6) + 9$. \\
+        所以, $15 \nmid -81$, $-81$\,被$15$除的{\color{red}不完全商}是$-6$, {\color{red}余数}是\,$9$.
+\end{enumerate}
+\end{example}}
+
+%%欧几里德算法和最大公因数的一个重要性质(1)
+\frame{
+\frametitle{欧几里德算法}
+欧几里德算法的依据:\\
+设\,$a, b \in \mathbb{Z}$\,不全为零, 则有\,$a = b \cdot q + c \Rightarrow (a,b)=(b,c)$.
+\vspace{0.5cm}
+\pause
+
+\begin{algorithm}[H]
+\caption{Euclidean Algorithm}
+\begin{algorithmic}[1]
+\REQUIRE $a,b \in \mathbb{Z}$ satisfying $a \ge b \ge 0$.
+\ENSURE $(a,b)$.
+\WHILE{$b > 0$}
+\STATE $c \leftarrow a \mod b$.
+\STATE $a \leftarrow b$ and $b \leftarrow c$.
+\ENDWHILE
+\RETURN $a$.
+\end{algorithmic}
+\end{algorithm}
+The algorithm is terminating, because in each loop $b$ is \textbf{ranking} by at least $1$ and the \textbf{invariant} $b \ge 0$ should be preserved.}
+
+%%欧几里德算法和最大公因数的一个重要性质(2)
+\frame{
+\frametitle{欧几里德算法}
+\begin{block}{欧几里德算法}
+反复进行带余除法, 直到某次余数为\,$0$.
+\begin{align*}
+              b \mbox{除} a & : a = b \cdot q_0 + r_0, \quad 0 < r_0 < |b|   \\
+            r_0 \mbox{除} a & : b = r_0 \cdot q_1 + r_1, \quad 0 < r_1 < r_0   \\
+          r_1 \mbox{除} r_0 & : r_0 = r_1 \cdot q_2 + r_2, \quad 0 < r_2 < r_1   \\
+                            & \ldots    \\
+  r_{n-1} \mbox{除} r_{n-2} & : r_{n-2} = r_{n-1} \cdot q_n + r_n, \quad 0 < r_n < r_{n-1}   \\
+    r_{n} \mbox{除} r_{n-1} & : r_{n-1} = r_{n} \cdot q_{n+1}   \\
+\end{align*}
+$$(a, b) = (b, r_0) = (r_0, r_1) = \ldots = (r_{n-1}, r_n) = r_n, \quad (r_0 > r_1 \cdots > r_n > 0).$$
+\end{block}}
+
+
+%%欧几里德算法和最大公因数的一个重要性质(3)
+\frame{
+\frametitle{欧几里德算法}
+\begin{example}
+求\,$435$\,和\,$377$\,的最大公因数, 并表示为\,$435$\,和\,$377$\, 的线性组合 \\
+\end{example}
+\pause
+
+\begin{columns}
+    \column{0.5\textwidth}
+        \begin{enumerate}
+            \item[(1)] 进行辗转相除法 \\
+                \begin{align*}
+                            433 & = 1 \cdot  377 + 58   \\
+                            377 & = 6 \cdot 58 + 29     \\
+                            58  & = 2 \cdot 29 + 0      \\
+                      (435,377) & = (377, 58)   \\
+                                & = (58, 29)    \\
+                                & = 29
+                \end{align*}
+        \end{enumerate}
+\pause
+    \column{0.5\textwidth}
+        \begin{enumerate}
+            \item[(2)] 把辗转相除的过程倒推回去\\
+                \begin{align*}
+                                      29 & = 377 - 6 \cdot 58  \\
+                                         & = 377 - 6 \cdot (435 - 1 \cdot 377)   \\
+                                         & = 7 \cdot 377 - 6 \cdot 435    \\
+                                         \\
+                                         \\
+             %\mbox{得到线性组合:}     29 & = 7 \cdot 377 - 6 \cdot 435
+                \end{align*}
+        \end{enumerate}
+\end{columns}
+}
+
+
+%%欧几里德算法和最大公因数的一个重要性质(4)
+\frame{
+\frametitle{扩展的欧几里德算法}
+\begin{block}{扩展的欧几里德算法}
+$a, b \in \mathbb{Z}$,\,不全为零, 在欧几里德算法完成后, 可以通过回代求出整数\,$s$, 和\,$t$, 使得
+$$(a, b) = s \cdot a + t \cdot b.$$
+\end{block}
+\vspace{0.5cm}
+\pause
+
+\begin{example}
+$a, b, c \in \mathbb{Z}$, $c \mid a \cdot b$, $(c, a)=1$, 证明: $c \mid b$.
+\end{example}}
+
+
+\subsection{Properties}
+\frame{
+\frametitle{最大公因数的基本性质}
+设整数\,$a_1, a_2, \ldots, a_n$\,($n \ge 2$)\,不全为零,
+\begin{enumerate}
+\item $a_i \neq 0 \Rightarrow (0, a_i) = a_i$.
+\item $(a_1, a_2, \ldots, a_n) = ( |a_1|, |a_2|, \ldots, |a_n|)$.
+\item 任意变换各整数的位置, $(a_1, a_2, \ldots, a_n )$\,的值保持不变.
+\item $a_1, a_2, \ldots, a_n$\,的公因数是\,$(a_1, a_2, \ldots, a_n)$\, 的因数.
+\item $(a_1, a_2, \ldots, a_n) = ((a_1, a_2), \ldots, a_n)$.
+\item 对于任意的\,$m \in \mathbb{N}$, $(m \cdot a_1, m \cdot a_2, \ldots, m \cdot a_n) = m \cdot (a_1, a_2, \ldots, a_n)$.
+\item 对于任意的\,$x_1, x_2, \ldots, x_n \in \mathbb{Z}$, $(a_1, a_2, \ldots, a_n) = (a_1+a_i \cdot x_1, a_2+a_i \cdot x_2, \ldots, a_{i-1}+a_i \cdot x_{i-1}, a_i, a_{i+1}+a_i \cdot x_{i+1}, a_{i+2}+a_i \cdot x_{i+2}, \ldots, a_n+a_i \cdot x_n)$.
+\item 存在\,$x_1, x_2, \ldots, x_n \in \mathbb{Z}$, 使得\,$(a_1, a_2, \ldots, a_n) = a_1 \cdot x_1 + a_2 \cdot x_2 + \ldots + a_n \cdot x_n$.
+\end{enumerate}}
+
+
+%\frame{\frametitle{最大公因数和最小公倍数}
+%\begin{proof}[最大公因数的基本性质]
+%\begin{enumerate}
+%\item[(1)] 从定义直接可知
+%\item[($2 \sim 6$)] 可由最大公因数的素因数分解计算法得到
+%\item[(7)] $i=1, \ x_2=1, x_3=0, \ldots, x_n=0$\,的情况:
+%            $$(a_1, a_2, \ldots, a_n) = (a_1, a_2+a_1, \ldots, a_n)$$
+%            $(a_1, a_2, \ldots, a_n)$\,和\,$(a_1, a_2+a_1, \ldots, a_n)$\, 具有相同的公因数, 所以等式成立 \\
+%            反复利用\,(2)\,和上述特例可得到\,(7)\,的一般情况
+%\item[(8)] 首先证明\,$n = 2$\,的情况 \\
+%            下例+上述特例+归纳法 \,$ \Rightarrow (8)$\,的一般情况
+%\end{enumerate}
+%\end{proof}
+%}
+
+\frame{
+\frametitle{素因数分解计算法}
+设正整数\,$a_1, a_2, \ldots, a_n$\,有素因数分解:
+\begin{align*}
+a_1 & = p_1^{\alpha_{11}} \cdot p_2^{\alpha_{12}} \cdot \cdots \cdot p_k^{\alpha_{1k}}   \\
+a_2 & = p_1^{\alpha_{21}} \cdot p_2^{\alpha_{22}} \cdot \cdots \cdot p_k^{\alpha_{2k}}   \\
+& \ldots  \\
+a_n & = p_1^{\alpha_{n1}} \cdot p_2^{\alpha_{n2}} \cdot \cdots \cdot p_k^{\alpha_{nk}} ,
+\end{align*}
+则有:
+\begin{align*}
+(a_1, a_2, \ldots, a_n ) & = p_1^{\alpha_1} \cdot p_2^{\delta_2} \cdot \cdots \cdot p_k^{\delta_k} \\
+[a_1, a_2, \ldots, a_n ] & = p_1^{\gamma_1} \cdot p_2^{\gamma_2} \cdot \cdots \cdot p_k^{\gamma_k} ,
+\end{align*}
+其中\,$\delta_i = \min( \alpha_{1i}, \alpha_{2i}, \ldots, \alpha_{ni} )$,
+$\gamma_i = \max( \alpha_{1i}, \alpha_{2i}, \ldots, \alpha_{ni})$.
+}
+
+
+%%最大公因数和最小公倍数(6)
+\frame{
+\frametitle{最大公因数的基本性质}
+\begin{example}
+非零整数\,$a_1, a_2, \ldots, a_n, \ n \geq 2$,   \\
+证明: $(a_1, a_2, \ldots, a_n) = ((a_1, a_2, \ldots, a_{n-1}), a_n)$.
+\end{example}
+\vspace{0.5cm}
+\pause
+
+\begin{example}
+整数\,$a_1, a_2, \ldots, a_n$, ($n \ge 2)$, 不全为零, \\
+证明: $(a_1, a_2, \ldots, a_n) = d \Rightarrow (\tfrac{a_1}{d}, \tfrac{a_2}{d}, \ldots, \tfrac{a_n}{d}) = 1$.
+\end{example}
+}
+
+
+%%最大公因数和最小公倍数(7)
+\frame{
+\frametitle{最大公因数的基本性质}
+\begin{example}
+$n \in \mathbb{N}$, 证明: $(n-1,n^2+n+4) \mid 6$.
+\end{example}
+\vspace{0.5cm}
+\pause
+
+\begin{example}
+$0, 1, \ldots, 10$\,中的哪些数可表示为\,$12m+20n$\,的形式, 其中\,$m$\,和\,$n$\,是整数?
+\end{example}
+}
+
+%%最大公因数和最小公倍数(8)
+\frame{
+\frametitle{最小公倍数的基本性质}
+设整数\,$a_1, a_2, \ldots, a_n$\,($n \ge 2$)\,不全为零,
+\begin{enumerate}
+\item $[a_1, a_2, \ldots, a_n] = [|a_1|, |a_2|, \ldots, |a_n|]$.
+\item 任意变换各整数的位置, $[a_1, a_2, \ldots, a_n ]$\,的值保持不变.
+\item $a_1, a_2, \ldots, a_n$\,的公倍因数是\,$[a_1, a_2, \ldots, a_n]$\, 的倍数.
+\item $[a_1, a_2, \ldots, a_n] = [[a_1, a_2], \ldots, a_n ]$.
+\item 对于任意的\,$m \in \mathbb{N}$, $[m \cdot a_1, m \cdot a_2, \ldots, m \cdot a_n] = m \cdot [a_1, a_2, \ldots, a_n]$.
+\item $(a_1, a_2) \cdot [a_1, a_2] = |a_1 \cdot a_2|$.\\ (可否推广到\,$n$\,个数的情况?)
+\end{enumerate}
+\vspace{0.5cm}
+\pause
+
+{\color{red}Hint:} 可由最大公倍数的素因数分解计算法得到.
+}
+
+\subsection{Homework}
+\frame{\frametitle{Homework}
+\begin{enumerate}
+\item PP.~32--33: Exercises~*2,4,7,11.
+\end{enumerate}}
+\end{CJK}
+\end{document}
 
