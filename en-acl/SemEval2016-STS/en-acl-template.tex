@@ -79,7 +79,7 @@ Several text preprocessing operations are performed before feature engineering:
 %{\bf ECNU:} This set of feature is taken from our previous work \cite{zhao-lan-tian:2015:SemEval}.
 {\bf Length Features (len):} We record the length information of given sentence pairs using the following eight measure functions: $|A|, |B|, |A-B|, |B-A|, |A \cup B|, |A \cap B|, \frac{|A-B|}{|B|}, \frac{|B-A|}{|A|}$, where $|A|$ stands for the number of non-repeated words in sentence $A$.
 
-{\bf Syntactic Features (pos):} Since two sentences with similar syntax structure convey similar meaning, we estimate the similarities of syntax structure. We firstly use Stanford CoreNLP toolkit \cite{manning-EtAl:2014:P14-5} to obtain the POS tags of each sentence. \textcolor[rgb]{1.00,0.00,0.00}{Afterwards, we use eight measure functions mentioned in the Length Features on the sets of POS tags to calculate Syntactic Features.}
+{\bf Syntactic Features (pos):} Since two sentences with similar syntax structure convey similar meaning, we estimate the similarities of syntax structure. We firstly use Stanford CoreNLP toolkit \cite{manning-EtAl:2014:P14-5} to obtain the POS tags of each sentence. Afterwards, we use eight measure functions mentioned in the Length Features on the sets of POS tags to calculate Syntactic Features.
 
 {\bf Longest Common Sequence (lcs):} In consideration of the different length of sentence pairs, we divide the maximum length of the common subsequence of two sentences by the length of the shorter one.
 
@@ -97,8 +97,8 @@ Several text preprocessing operations are performed before feature engineering:
 
 \subsubsection{Machine Translation Similarity}
 
-\textcolor[rgb]{1.00,0.00,0.00}{Machine Translation (MT) evaluation metrics are designed to assess whether the output of a MT system is semantically equivalent to a set of reference translations. The two given sentences are viewed as one input and one output of a MT system, then we get two MT scores of each MT measure (i.e., {\em WER, TER, PER, NIST, ROUGE-L, GTM-1}).
-Two strategies is employed to get MT similarity features, 1). average two MT scores in each MT measure; 2). concatenate two MT scores  in each MT measure.}
+Machine Translation (MT) evaluation metrics are designed to assess whether the output of a MT system is semantically equivalent to a set of reference translations. The two given sentences are viewed as one input and one output of a MT system, then we get two MT scores of each MT measure (i.e., {\em WER, TER, PER, NIST, ROUGE-L, GTM-1}).
+Two strategies is employed to get MT similarity features, 1). average two MT scores in each MT measure; 2). concatenate two MT scores  in each MT measure.
 
 \subsubsection{Corpus-based Features}
 
@@ -186,7 +186,7 @@ Recently, the distributed representations of words (i.e., word embedding) learne
 
 As discussed in Section \ref{sec:introduction}, it is very hard to evaluate semantic similarity if no words in the sentence pair in common. Obviously, word embedding features supply the gap. For example, {\em A storm will spread snow over Shanghai; The earthquakes have shaken parts of Oklahoma}. while {\em storm} is similar to {\em earthquake} and {\em spread} is analogous to {\em shaken}, {\em Shanghai} and {\em Oklahoma} both are locations.
 
-\textcolor[rgb]{1.00,0.00,0.00}{In order to evaluate semantic similarity of a sentence pair, we define the function {\em INFO} is the semantic information of a word or a sentence carried. Thus the semantic similarity of sentence pair can be regarded as the distance between their {\em INFOs}. In other words, given sentence $S_1$ and $S_2$,}
+In order to evaluate semantic similarity of a sentence pair, we define the function {\em INFO} is the semantic information of a word or a sentence carried. Thus the semantic similarity of sentence pair can be regarded as the distance between their {\em INFOs}. In other words, given sentence $S_1$ and $S_2$,
 \begin{equation}
 \footnotesize
 \begin{aligned}
@@ -257,7 +257,7 @@ sts(S_1, S_2) &=  \text{\em INFO}\left(f(w_{1}^{S_1}, w_{2}^{S_1}, \ldots, w_{le
 \end{tikzpicture}
 \caption{An illustration of the word mover's distance, an instance of micro information distance.}\label{fig:wmd}
 \end{figure}
-where $w_i^{S_j}$ is the word embedding of word $i$ in sentence $j$ and \textcolor[rgb]{1.00,0.00,0.00}{function $f$ is to obtain the sentence representation from word embeddings, such as sum, average or convolution. } Assuming that if two sentences are similar, one word in a sentence should have the similar meaning word with another, we use the centroid of word embedding to symbolise the macro {\em INFO} of the sentence. As showed in Figure \ref{fig:wcvd}, $S_i$ represents for sentence i, and the distance between $S_1$ and $S_2$ represents for the similarity of the sentence pair. What is more, {\em storm} and {\em earthquakes} are the most important word in the sentence pair, we surely should give them more weight. As they are similar, the distance centroid tend to be close (the dashed lines). We use {\em idf} from datasets to weigh the importance.
+where $w_i^{S_j}$ is the word embedding of word $i$ in sentence $j$ and function $f$ is to obtain the sentence representation from word embeddings, such as sum, average or convolution. Assuming that if two sentences are similar, one word in a sentence should have the similar meaning word with another, we use the centroid of word embedding to symbolise the macro {\em INFO} of the sentence. As showed in Figure \ref{fig:wcvd}, $S_i$ represents for sentence i, and the distance between $S_1$ and $S_2$ represents for the similarity of the sentence pair. What is more, {\em storm} and {\em earthquakes} are the most important word in the sentence pair, we surely should give them more weight. As they are similar, the distance centroid tend to be close (the dashed lines). We use {\em idf} from datasets to weigh the importance.
 
 
 {\em Micro Information Distance:} As for micro view, we first get the {\em INFO} of each word, and evaluate the distance between the sentence pair according to the {\em INFO} of words. The formula is described as Equation \ref{eq:micro formula}.
@@ -326,7 +326,7 @@ In order to evaluate the performance of different algorithms, we adopt the offic
 
 
 \subsection{Learning Algorithm}
-\textcolor[rgb]{1.00,0.00,0.00}{We conduct a series of experiments using all features discussed in Section \ref{ssec:traditional nlp feature engineering} and \ref{ssec:word embedding feature engineering} to obtain the optimized learning algorithm.} Three supervised learning methods are explored: Support Vector Regression (SVR), Random Forest (RF) and Gradient Boosting (GB). These supervised learning algorithms are implemented using scikit-learn toolkit \cite{sklearn_api}.we use all the datasets from STS Task 2015 as development data while others from STS Task 2012 to 2014 as training data.
+We conduct a series of experiments using all features discussed in Section \ref{ssec:traditional nlp feature engineering} and \ref{ssec:word embedding feature engineering} to obtain the optimized learning algorithm. Three supervised learning methods are explored: Support Vector Regression (SVR), Random Forest (RF) and Gradient Boosting (GB). These supervised learning algorithms are implemented using scikit-learn toolkit \cite{sklearn_api}.we use all the datasets from STS Task 2015 as development data while others from STS Task 2012 to 2014 as training data.
 
 To configure the parameters in the regression algorithm, i.e., the trade-off parameter $c$ in SVR, the number of trees $n_{RF}$ in RF and the number of boosting stages $n_{GB}$ in GB, we make a grid search for $c$ in $[0.01, 0.1, 1, 10]$, $n_{RF}$ from $5$ to $100$ with step $5$ and $n_{GB}$ from $10$ to $300$ with step $10$.
 
@@ -360,7 +360,7 @@ Table \ref{tab:algorithmSelection} shows the best result of each algorithm , as 
 We build three different systems according to the usage of training datasets as follows.
 
 {\bf U-SEVEN:}
-\textcolor[rgb]{1.00,0.00,0.00}{This is an unsupervised system based on the word aligner described in \cite{sultan-bethard-sumner:2015:SemEval} without any training data. We evaluate semantic similarity by adopting straight-forward measurements (i.e., longest common sequence, alignment feature, corpus-based feature, all four features from word embedding features), which are averaged to get the final score. We adopt {\em  cosine distance, Pearson coefficient, Spearman coefficient} as the distance measurements, which perform better results on our preliminary experiments.}
+This is an unsupervised system based on the word aligner described in \cite{sultan-bethard-sumner:2015:SemEval} without any training data. We evaluate semantic similarity by adopting straight-forward measurements (i.e., longest common sequence, alignment feature, corpus-based feature, all four features from word embedding features), which are averaged to get the final score. We adopt {\em  cosine distance, Pearson coefficient, Spearman coefficient} as the distance measurements, which perform better results on our preliminary experiments.
 %As to distance function in word embedding features, {\em  cosine distance, Pearson coefficient, Spearman coefficient} are selected, which is based on our experiments on all datasets, where these subsets yield better results than an all-inclusive training set (seemingly due to the range of these measurements are similar).
 %In this section, we assess the effectiveness of our proposed models for Similarity Measure. In particular, we aim to answer the following research questions:
 
